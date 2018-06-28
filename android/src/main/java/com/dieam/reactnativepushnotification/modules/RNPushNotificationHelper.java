@@ -23,12 +23,15 @@ import android.util.Log;
 
 import com.facebook.react.bridge.ReadableMap;
 
-import org.json.JSONArray;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.LocalTime;
 import org.json.JSONException;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
+
+import com.dieam.reactnativepushnotification.helpers.TimeHelper;
 
 import static com.dieam.reactnativepushnotification.modules.RNPushNotification.LOG_TAG;
 import static com.dieam.reactnativepushnotification.modules.RNPushNotificationAttributes.fromJson;
@@ -74,7 +77,7 @@ public class RNPushNotificationHelper {
         return PendingIntent.getBroadcast(context, notificationID, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public void sendNotificationScheduled(Bundle bundle) {
+    private void sendNotificationScheduled(Bundle bundle) {
         Class intentClass = getMainActivityClass();
         if (intentClass == null) {
             Log.e(LOG_TAG, "No activity class found for the scheduled notification");
@@ -340,46 +343,19 @@ public class RNPushNotificationHelper {
         }
     }
 
-    private void scheduleNextNotificationIfRepeating(Bundle bundle) {
+    public void scheduleNextNotificationIfRepeating(Bundle bundle) {
         String repeatType = bundle.getString("repeatType");
-        long repeatTime = (long) bundle.getDouble("repeatTime");
-
         if (repeatType != null) {
-            long fireDate = (long) bundle.getDouble("fireDate");
+            long currentDate = DateTime.now().toInstant().getMillis();
+            LocalTime startTime = new LocalTime(bundle.getInt("startTimeHour"),
+                    bundle.getInt("startTimeMinute"));
 
-            boolean validRepeatType = Arrays.asList("time", "week", "day", "hour", "minute").contains(repeatType);
+            LocalTime endTime = new LocalTime(bundle.getInt("endTimeHour"),
+                    bundle.getInt("endTimeMinute"));
+            Duration frequency = Duration.standardMinutes(bundle.getInt("frequencyMinutes"));
+            Integer jitter = bundle.getInt("jitter");
 
-            // Sanity checks
-            if (!validRepeatType) {
-                Log.w(LOG_TAG, String.format("Invalid repeatType specified as %s", repeatType));
-                return;
-            }
-
-            if ("time".equals(repeatType) && repeatTime <= 0) {
-                Log.w(LOG_TAG, "repeatType specified as time but no repeatTime " +
-                        "has been mentioned");
-                return;
-            }
-
-            long newFireDate = 0;
-
-            switch (repeatType) {
-                case "time":
-                    newFireDate = fireDate + repeatTime;
-                    break;
-                case "week":
-                    newFireDate = fireDate + 7 * ONE_DAY;
-                    break;
-                case "day":
-                    newFireDate = fireDate + ONE_DAY;
-                    break;
-                case "hour":
-                    newFireDate = fireDate + ONE_HOUR;
-                    break;
-                case "minute":
-                    newFireDate = fireDate + ONE_MINUTE;
-                    break;
-            }
+            long newFireDate = TimeHelper.getNextScheduledTime(new DateTime(currentDate), startTime, endTime, frequency, jitter).toInstant().getMillis();
 
             // Sanity check, should never happen
             if (newFireDate != 0) {
