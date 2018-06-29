@@ -356,7 +356,7 @@ public class RNPushNotificationHelper {
             Integer jitter = bundle.getInt("jitter");
 
             long newFireDate = TimeHelper.getNextScheduledTime(new DateTime(currentDate), startTime, endTime, frequency, jitter).toInstant().getMillis();
-
+            Log.i(LOG_TAG, String.format("Scheduling next notification for %s", new DateTime(newFireDate).toString()));
             // Sanity check, should never happen
             if (newFireDate != 0) {
                 Log.d(LOG_TAG, String.format("Repeating notification with id %s at time %s",
