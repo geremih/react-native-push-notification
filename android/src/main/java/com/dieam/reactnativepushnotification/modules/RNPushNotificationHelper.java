@@ -347,13 +347,13 @@ public class RNPushNotificationHelper {
         String repeatType = bundle.getString("repeatType");
         if (repeatType != null) {
             long currentDate = DateTime.now().toInstant().getMillis();
-            LocalTime startTime = new LocalTime(bundle.getInt("startTimeHour"),
-                    bundle.getInt("startTimeMinute"));
+            LocalTime startTime = new LocalTime((int) bundle.getDouble("startTimeHour"),
+                    (int) bundle.getDouble("startTimeMinute"));
 
-            LocalTime endTime = new LocalTime(bundle.getInt("endTimeHour"),
-                    bundle.getInt("endTimeMinute"));
-            Duration frequency = Duration.standardMinutes(bundle.getInt("frequencyMinutes"));
-            Integer jitter = bundle.getInt("jitter");
+            LocalTime endTime = new LocalTime((int) bundle.getDouble("endTimeHour"),
+                    (int) bundle.getDouble("endTimeMinute"));
+            Duration frequency = Duration.standardMinutes((int) bundle.getDouble("frequencyMinutes"));
+            Integer jitter = (int) bundle.getDouble("jitter");
 
             long newFireDate = TimeHelper.getNextScheduledTime(new DateTime(currentDate), startTime, endTime, frequency, jitter).toInstant().getMillis();
             Log.i(LOG_TAG, String.format("Scheduling next notification for %s", new DateTime(newFireDate).toString()));
