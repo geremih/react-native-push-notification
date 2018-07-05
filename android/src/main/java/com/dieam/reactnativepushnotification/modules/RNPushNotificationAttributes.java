@@ -46,6 +46,12 @@ public class RNPushNotificationAttributes {
     private static final String ONGOING = "ongoing";
     private static final String ACTION_ID = "id";
     private static final String ACTION_TEXT = "text";
+    private static final String START_TIME_HOUR = "startTimeHour";
+    private static final String START_TIME_MINUTE = "startTimeMinute";
+    private static final String END_TIME_HOUR = "endTimeHour";
+    private static final String END_TIME_MINUTE = "endTimeMinute";
+    private static final String FREQUENCY_MINUTES = "frequencyMinutes";
+    private static final String JITTER_MINUTES = "jitterMinutes";
 
     private final String id;
     private final String message;
@@ -70,6 +76,12 @@ public class RNPushNotificationAttributes {
     private final String repeatType;
     private final double repeatTime;
     private final boolean ongoing;
+    private final double startTimeHour;
+    private final double startTimeMinute;
+    private final double endTimeHour;
+    private final double endTimeMinute;
+    private final double frequencyMinutes;
+    private final double jitterMinutes;
 
     public RNPushNotificationAttributes(Bundle bundle) {
         id = bundle.getString(ID);
@@ -95,6 +107,12 @@ public class RNPushNotificationAttributes {
         repeatType = bundle.getString(REPEAT_TYPE);
         repeatTime = bundle.getDouble(REPEAT_TIME);
         ongoing = bundle.getBoolean(ONGOING);
+        startTimeHour = bundle.getDouble(START_TIME_HOUR);
+        startTimeMinute = bundle.getDouble(START_TIME_MINUTE);
+        endTimeHour = bundle.getDouble(END_TIME_HOUR);
+        endTimeMinute = bundle.getDouble(END_TIME_MINUTE);
+        frequencyMinutes = bundle.getDouble(FREQUENCY_MINUTES);
+        jitterMinutes = bundle.getDouble(JITTER_MINUTES);
     }
 
     private RNPushNotificationAttributes(JSONObject jsonObject) {
@@ -122,6 +140,12 @@ public class RNPushNotificationAttributes {
             repeatType = jsonObject.has(REPEAT_TYPE) ? jsonObject.getString(REPEAT_TYPE) : null;
             repeatTime = jsonObject.has(REPEAT_TIME) ? jsonObject.getDouble(REPEAT_TIME) : 0.0;
             ongoing = jsonObject.has(ONGOING) ? jsonObject.getBoolean(ONGOING) : false;
+            startTimeHour = jsonObject.has(START_TIME_HOUR) ? jsonObject.getDouble(START_TIME_HOUR) : 0.0;
+            startTimeMinute =jsonObject.has(START_TIME_MINUTE) ? jsonObject.getDouble(START_TIME_MINUTE) : 0.0;
+            endTimeHour =jsonObject.has(END_TIME_HOUR) ? jsonObject.getDouble(END_TIME_HOUR) : 0.0;
+            endTimeMinute = jsonObject.has(END_TIME_MINUTE) ? jsonObject.getDouble(END_TIME_MINUTE) : 0.0;
+            frequencyMinutes =jsonObject.has(FREQUENCY_MINUTES) ? jsonObject.getDouble(FREQUENCY_MINUTES) : 1.0;
+            jitterMinutes = jsonObject.has(JITTER_MINUTES) ? jsonObject.getDouble(JITTER_MINUTES) : 1.0;
         } catch (JSONException e) {
             throw new IllegalStateException("Exception while initializing RNPushNotificationAttributes from JSON", e);
         }
@@ -228,6 +252,12 @@ public class RNPushNotificationAttributes {
         bundle.putString(REPEAT_TYPE, repeatType);
         bundle.putDouble(REPEAT_TIME, repeatTime);
         bundle.putBoolean(ONGOING, ongoing);
+        bundle.putDouble(START_TIME_HOUR, startTimeHour);
+        bundle.putDouble(START_TIME_MINUTE, startTimeMinute);
+        bundle.putDouble(END_TIME_HOUR, endTimeHour);
+        bundle.putDouble(END_TIME_MINUTE, endTimeMinute);
+        bundle.putDouble(FREQUENCY_MINUTES, frequencyMinutes);
+        bundle.putDouble(JITTER_MINUTES, jitterMinutes);
         return bundle;
     }
 
@@ -257,6 +287,12 @@ public class RNPushNotificationAttributes {
             jsonObject.put(REPEAT_TYPE, repeatType);
             jsonObject.put(REPEAT_TIME, repeatTime);
             jsonObject.put(ONGOING, ongoing);
+            jsonObject.put(START_TIME_HOUR, startTimeHour);
+            jsonObject.put(START_TIME_MINUTE, startTimeMinute);
+            jsonObject.put(END_TIME_HOUR, endTimeHour);
+            jsonObject.put(END_TIME_MINUTE, endTimeMinute);
+            jsonObject.put(FREQUENCY_MINUTES, frequencyMinutes);
+            jsonObject.put(JITTER_MINUTES, jitterMinutes);
         } catch (JSONException e) {
             Log.e(LOG_TAG, "Exception while converting RNPushNotificationAttributes to " +
                     "JSON. Returning an empty object", e);
@@ -292,6 +328,12 @@ public class RNPushNotificationAttributes {
                 ", repeatType='" + repeatType + '\'' +
                 ", repeatTime=" + repeatTime +
                 ", ongoing=" + ongoing +
+                ", startTimeHour" + startTimeHour +
+                ", startTimeMinute" + startTimeMinute +
+                ", endTimeHour" + endTimeHour +
+                ", endTimeMinute" + endTimeMinute +
+                ", frequencyMinutes" + frequencyMinutes +
+                ", jitterMinutes" + jitterMinutes +
                 '}';
     }
 
